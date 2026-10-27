@@ -1,0 +1,76 @@
+{
+  "name": "skill-nexus",
+  "version": "1.1.0",
+  "description": "Centralized cross-platform skill management and auto-discovery for AI agents (Claude Code, Antigravity, Cursor, Windsurf, Codex, Clawdbot)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "skill-nexus": "./dist/cli.js",
+    "sn": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup && tsc --emitDeclarationOnly",
+    "dev": "tsup --watch",
+    "start": "node dist/cli.js",
+    "test": "node --test test/**/*.test.js",
+    "typecheck": "tsc --noEmit",
+    "package": "pkg dist/cli.cjs",
+    "package:all": "pkg dist/cli.cjs --targets node18-macos-arm64,node18-macos-x64,node18-linux-x64,node18-win-x64 --out-path binaries"
+  },
+  "pkg": {
+    "scripts": "dist/**/*.cjs",
+    "assets": [
+      "templates/**/*"
+    ],
+    "targets": [
+      "node18-macos-arm64",
+      "node18-macos-x64",
+      "node18-linux-x64",
+      "node18-win-x64"
+    ],
+    "outputPath": "binaries"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Peerawit-Y/skill-nexus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Peerawit-Y/skill-nexus/issues"
+  },
+  "homepage": "https://github.com/Peerawit-Y/skill-nexus#readme",
+  "keywords": [
+    "ai",
+    "skills",
+    "agent",
+    "claude",
+    "antigravity",
+    "cursor",
+    "windsurf",
+    "codex",
+    "clawdbot",
+    "symlink"
+  ],
+  "author": "Peerawit-Y",
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^0.9.1",
+    "commander": "^12.1.0",
+    "fs-extra": "^11.3.0",
+    "picocolors": "^1.1.1",
+    "yaml": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.10.1",
+    "@yao-pkg/pkg": "^5.14.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  }
+}

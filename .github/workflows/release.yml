@@ -1,0 +1,57 @@
+name: Release Binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-binaries:
+    name: Build Standalone Binaries
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Build JS & CJS Bundles
+        run: npm run build
+
+      - name: Compile Standalone Binaries (macOS, Linux, Windows)
+        run: |
+          npx @yao-pkg/pkg dist/cli.cjs \
+            --targets node18-macos-arm64,node18-macos-x64,node18-linux-x64,node18-win-x64 \
+            --out-path binaries
+
+          # Rename binaries for clean download filenames
+          mv binaries/cli-macos-arm64 binaries/skill-nexus-macos-arm64
+          mv binaries/cli-macos-x64 binaries/skill-nexus-macos-x64
+          mv binaries/cli-linux-x64 binaries/skill-nexus-linux-x64
+          mv binaries/cli-win-x64.exe binaries/skill-nexus-windows-x64.exe
+
+      - name: Create GitHub Release & Attach Binaries
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            binaries/skill-nexus-macos-arm64
+            binaries/skill-nexus-macos-x64
+            binaries/skill-nexus-linux-x64
+            binaries/skill-nexus-windows-x64.exe
+          draft: false
+          prerelease: false
+          generate_release_notes: true
