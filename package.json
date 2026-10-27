@@ -22,7 +22,9 @@
     "test": "node --test test/**/*.test.js",
     "typecheck": "tsc --noEmit",
     "package": "pkg dist/cli.cjs",
-    "package:all": "pkg dist/cli.cjs --targets node18-macos-arm64,node18-macos-x64,node18-linux-x64,node18-win-x64 --out-path binaries"
+    "package:all": "pkg dist/cli.cjs --targets node18-macos-arm64,node18-macos-x64,node18-linux-x64,node18-win-x64 --out-path binaries",
+    "web:dev": "npm --prefix website run dev",
+    "web:build": "npm --prefix website run build"
   },
   "pkg": {
     "scripts": "dist/**/*.cjs",
