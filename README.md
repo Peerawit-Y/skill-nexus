@@ -4,7 +4,7 @@ Centralized skill management and auto-discovery for distributing skills across A
 
 Cross-platform support for **macOS**, **Linux**, and native **Windows** (via NTFS junctions without requiring WSL or admin elevation).
 
-🌐 **Official Website & Interactive Docs:** [peerawit-y.github.io/skill-nexus](https://peerawit-y.github.io/skill-nexus/)
+🌐 **Official Website & Interactive Docs:** [skillsnexus.vercel.app](https://skillsnexus.vercel.app)
 
 ## Quick Start (Zero Install)
 
