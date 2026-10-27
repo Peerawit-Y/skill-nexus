@@ -4,9 +4,45 @@ Centralized skill management and auto-discovery for distributing skills across A
 
 Cross-platform support for **macOS**, **Linux**, and native **Windows** (via NTFS junctions without requiring WSL or admin elevation).
 
+## Quick Start (Zero Install)
+
+Run directly without installing anything permanently:
+
+```bash
+npx skill-nexus init   # Create ~/.skill-nexus/ & auto-detect agents
+npx skill-nexus        # Open interactive dashboard
+```
+
+---
+
 ## Installation
 
-### Standalone Binary (Zero Dependencies - No Node.js Required)
+Choose the installation method that fits your environment:
+
+### Option 1: NPM (Recommended for Cross-Platform)
+
+```bash
+npm install -g skill-nexus
+```
+
+> [!TIP]
+> **Permission Denied (`EACCES`)?**
+> Avoid using `sudo npm install -g`. Instead, configure npm to install packages safely in your user home directory:
+> ```bash
+> mkdir -p ~/.npm-global && npm config set prefix '~/.npm-global'
+> echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.zshrc # or ~/.bashrc
+> source ~/.zshrc
+> ```
+> Then run `npm install -g skill-nexus` again without sudo.
+
+### Option 2: Homebrew (macOS)
+
+```bash
+brew tap Peerawit-Y/tap
+brew install skill-nexus
+```
+
+### Option 3: Standalone Binary (Zero Dependencies - No Node.js Required)
 
 **macOS & Linux (One-line install):**
 ```bash
@@ -20,24 +56,7 @@ Download pre-compiled native binaries from [GitHub Releases](https://github.com/
 - **macOS (Intel):** `skill-nexus-macos-x64`
 - **Linux (x64):** `skill-nexus-linux-x64`
 
-### NPM (Cross-Platform: Windows, macOS, Linux)
-
-```bash
-# Run directly without install:
-npx skill-nexus
-
-# Or install globally:
-npm install -g skill-nexus
-```
-
-### Homebrew (macOS)
-
-```bash
-brew tap Peerawit-Y/tap
-brew install skill-nexus
-```
-
-### Manual Install (Development)
+### Option 4: Manual Install (Development)
 
 ```bash
 # Clone the repo
@@ -50,25 +69,29 @@ npm run build
 npm link
 ```
 
-### First-Time Setup
+---
+
+## How It Works in 3 Steps
 
 ```bash
-skill-nexus init                # Creates ~/.skill-nexus/
-skill-nexus new my-first-skill  # Create your first skill
-skill-nexus sync                # Sync skills to agents
+# 1. Initialize system & auto-detect installed AI agents (Claude, Cursor, Codex, etc.)
+sn init
+
+# 2. Add or create a skill
+sn new my-skill                      # Create a new skill template
+# OR install from GitHub:
+sn install owner/repo-name           # Install a remote skill
+
+# 3. Sync skills to all detected agents
+sn sync
 ```
 
-## Quick Start
+Type `sn` (or `skill-nexus`) at any time to open the interactive TUI menu:
 
 ```bash
-skill-nexus                     # Launch interactive menu (requires gum)
-skill-nexus status              # Detailed status
+sn             # Launch interactive menu
+sn status      # Check current skill distribution
 ```
-
-The interactive menu lets you:
-- Configure which skills each agent gets
-- Manage skills (view info, migrate to project repos)
-- Create and apply skill presets
 
 ## Commands
 
