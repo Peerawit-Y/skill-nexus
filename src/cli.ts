@@ -173,10 +173,13 @@ program
 program
   .command('new <name>')
   .description('Create a new skill from template')
-  .action(async (name: string) => {
+  .option('-t, --template <type>', 'Template type: standard, code-review, workflow-automation, api-integration', 'standard')
+  .action(async (name: string, opts?: { template?: string }) => {
     try {
-      const filePath = await createNewSkill(name);
-      console.log(pc.green(`✓ Created new skill at ${contractPath(filePath)}`));
+      let tpl = opts?.template || 'skill-template';
+      if (tpl === 'standard') tpl = 'skill-template';
+      const filePath = await createNewSkill(name, tpl);
+      console.log(pc.green(`✓ Created new skill '${name}' (template: ${opts?.template || 'standard'}) at ${contractPath(filePath)}`));
     } catch (err: unknown) {
       console.error(pc.red((err as Error).message));
       process.exit(1);
@@ -587,15 +590,18 @@ projectCmd
 projectCmd
   .command('new <name>')
   .description('Create a new skill inside project .skills/ directory')
-  .action(async (skillName: string) => {
+  .option('-t, --template <type>', 'Template type: standard, code-review, workflow-automation, api-integration', 'standard')
+  .action(async (skillName: string, opts?: { template?: string }) => {
     const root = await findProjectRoot();
     if (!root) {
       console.error(pc.red('No project root found. Run "skill-nexus project init" first.'));
       process.exit(1);
     }
     try {
-      const filePath = await createProjectSkill(root, skillName);
-      console.log(pc.green(`✓ Created project skill at ${contractPath(filePath)}`));
+      let tpl = opts?.template || 'skill-template';
+      if (tpl === 'standard') tpl = 'skill-template';
+      const filePath = await createProjectSkill(root, skillName, tpl);
+      console.log(pc.green(`✓ Created project skill '${skillName}' (template: ${opts?.template || 'standard'}) at ${contractPath(filePath)}`));
     } catch (err: unknown) {
       console.error(pc.red((err as Error).message));
       process.exit(1);

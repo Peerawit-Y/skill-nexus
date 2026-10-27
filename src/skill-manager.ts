@@ -6,37 +6,58 @@ import { isSymlink, getSymlinkTarget, createDirectorySymlink } from './symlink.j
 import { parseSkillMarkdown } from './utils/frontmatter.js';
 import type { Skill, SkillMetadata } from './types.js';
 
-export async function getTemplateContent(): Promise<string> {
-  // Check local project template first
-  const localTemplate = path.resolve(
+export async function getTemplateContent(templateType = 'skill-template'): Promise<string> {
+  const baseTemplatesDir = path.resolve(
     path.dirname(new URL(import.meta.url).pathname),
-    '../../templates/skill-template/SKILL.md'
+    '../../templates'
   );
-  if (await fs.pathExists(localTemplate)) {
-    return await fs.readFile(localTemplate, 'utf-8');
+
+  const candidateFile = path.join(baseTemplatesDir, templateType, 'SKILL.md');
+  if (await fs.pathExists(candidateFile)) {
+    return await fs.readFile(candidateFile, 'utf-8');
+  }
+
+  // Fallback to default template file
+  const defaultTemplate = path.join(baseTemplatesDir, 'skill-template', 'SKILL.md');
+  if (await fs.pathExists(defaultTemplate)) {
+    return await fs.readFile(defaultTemplate, 'utf-8');
   }
 
   return `---
 name: {{SKILL_NAME}}
-description: Brief description of what this skill does
+description: Expert guidance and actionable workflow for {{SKILL_NAME}}. Trigger when working on {{SKILL_NAME}} tasks.
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep
+metadata:
+  requires:
+    bins: []
+    env: []
 ---
 
 # {{SKILL_NAME}}
 
-Instructions for the AI agent go here.
+Detailed guidelines and actionable instructions for AI agents when performing {{SKILL_NAME}}.
 
-## Overview
+## 1. Trigger & Scope
 
-Describe what this skill enables the agent to do.
+### When to Use
+- When working on implementation, refactoring, or debugging tasks for {{SKILL_NAME}}.
 
-## Usage
+### When NOT to Use
+- For general questions unrelated to {{SKILL_NAME}}.
 
-How to use this skill.
+---
 
-## Commands
+## 2. Guardrails & Safety Rules
+- Verify state before and after making changes.
+- Never log or hardcode sensitive tokens or secrets.
+- Run tests and linting after making modifications.
 
-List any specific commands or workflows.
+---
+
+## 3. Step-by-Step Workflow
+1. **Context Discovery**: Check relevant files and configuration.
+2. **Implementation**: Make targeted changes cleanly.
+3. **Verification**: Run tests and typecheck.
 `;
 }
 
@@ -93,7 +114,7 @@ export async function getAllSkills(): Promise<Skill[]> {
   return skills.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export async function createNewSkill(name: string): Promise<string> {
+export async function createNewSkill(name: string, templateType = 'skill-template'): Promise<string> {
   const { skillsDir } = getPaths();
   const targetDir = path.join(skillsDir, name);
 
@@ -102,7 +123,7 @@ export async function createNewSkill(name: string): Promise<string> {
   }
 
   await fs.ensureDir(targetDir);
-  const template = await getTemplateContent();
+  const template = await getTemplateContent(templateType);
   const filled = template.replaceAll('{{SKILL_NAME}}', name);
   const targetFile = path.join(targetDir, 'SKILL.md');
   await fs.writeFile(targetFile, filled, 'utf-8');

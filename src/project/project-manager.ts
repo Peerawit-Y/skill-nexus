@@ -137,7 +137,11 @@ export async function getProjectSkills(projectRoot: string): Promise<ProjectSkil
   return skills.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export async function createProjectSkill(projectRoot: string, skillName: string): Promise<string> {
+export async function createProjectSkill(
+  projectRoot: string,
+  skillName: string,
+  templateType = 'skill-template'
+): Promise<string> {
   const config = await loadProjectConfig(projectRoot);
   const skillsDirName = config?.skillsDir || DEFAULT_SKILLS_DIR;
   const targetDir = path.join(projectRoot, skillsDirName, skillName);
@@ -147,7 +151,7 @@ export async function createProjectSkill(projectRoot: string, skillName: string)
   }
 
   await fs.ensureDir(targetDir);
-  const template = await getTemplateContent();
+  const template = await getTemplateContent(templateType);
   const filled = template.replaceAll('{{SKILL_NAME}}', skillName);
   const targetFile = path.join(targetDir, 'SKILL.md');
   await fs.writeFile(targetFile, filled, 'utf-8');

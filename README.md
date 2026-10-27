@@ -188,24 +188,55 @@ clawdbot:~/.clawdbot/skills:all
 
 ## Creating Skills
 
-Skills are stored in `~/.skill-nexus/skills/`. Each skill needs a `SKILL.md` file with YAML frontmatter:
+Skills are stored in `~/.skill-nexus/skills/`. Each skill includes a structured `SKILL.md` file with YAML frontmatter.
+
+You can create skills using specialized templates:
 
 ```bash
-skill-nexus new my-skill   # Creates ~/.skill-nexus/skills/my-skill/SKILL.md
+# 1. Standard / Universal template (default)
+skill-nexus new my-skill
+
+# 2. Code Review & QA template (security checklist & quality rules)
+skill-nexus new pr-auditor --template code-review
+
+# 3. Workflow Automation template (CI/CD, build & execution steps)
+skill-nexus new release-tool --template workflow-automation
+
+# 4. API Integration template (endpoints, auth & error handling)
+skill-nexus new payment-api --template api-integration
 ```
 
-### SKILL.md Format
+### Standard SKILL.md Structure
 
 ```yaml
 ---
 name: my-skill
-description: Brief description
-allowed-tools: Bash, Read, Write, Edit
+description: Clear, trigger-oriented summary for AI agents
+allowed-tools: Bash, Read, Write, Edit, Glob, Grep
+metadata:
+  requires:
+    bins: [git]
+    env: [API_KEY]
 ---
 
 # My Skill
 
-Instructions for the AI agent...
+Detailed guidelines and actionable instructions for AI agents.
+
+## 1. Trigger & Scope
+- When to Use
+- When NOT to Use
+
+## 2. Guardrails & Safety Rules
+- Core constraints and idempotency
+
+## 3. Step-by-Step Workflow
+1. Context discovery
+2. Execution
+3. Verification
+
+## 4. Commands & Reference Code
+## 5. Troubleshooting & Edge Cases
 ```
 
 ### Remote Skills (Install & Update from GitHub)

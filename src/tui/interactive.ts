@@ -240,8 +240,20 @@ async function handleNewSkill(): Promise<void> {
 
   if (p.isCancel(name) || !name) return;
 
+  const templateType = await p.select({
+    message: 'Select template type:',
+    options: [
+      { value: 'skill-template', label: 'Standard / Universal (General instructions)' },
+      { value: 'code-review', label: 'Code Review & QA (Linting & architectural review)' },
+      { value: 'workflow-automation', label: 'Workflow Automation (CI/CD & build steps)' },
+      { value: 'api-integration', label: 'API Integration (Endpoints, auth & error codes)' },
+    ],
+  });
+
+  if (p.isCancel(templateType)) return;
+
   try {
-    const createdFile = await createNewSkill(name.trim());
+    const createdFile = await createNewSkill(name.trim(), templateType as string);
     p.log.success(`Skill created at ${pc.dim(contractPath(createdFile))}`);
   } catch (err: unknown) {
     p.log.error((err as Error).message);
@@ -540,8 +552,19 @@ async function handleProjectMenu(): Promise<void> {
     });
     if (p.isCancel(name) || !name) return;
 
+    const templateType = await p.select({
+      message: 'Select template type:',
+      options: [
+        { value: 'skill-template', label: 'Standard / Universal (General instructions)' },
+        { value: 'code-review', label: 'Code Review & QA (Linting & architectural review)' },
+        { value: 'workflow-automation', label: 'Workflow Automation (CI/CD & build steps)' },
+        { value: 'api-integration', label: 'API Integration (Endpoints, auth & error codes)' },
+      ],
+    });
+    if (p.isCancel(templateType)) return;
+
     try {
-      const filePath = await createProjectSkill(root, name.trim());
+      const filePath = await createProjectSkill(root, name.trim(), templateType as string);
       p.log.success(`Created project skill at ${contractPath(filePath)}`);
     } catch (err: unknown) {
       p.log.error((err as Error).message);
